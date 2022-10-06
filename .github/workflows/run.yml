@@ -28,3 +28,7 @@ jobs:
           pwd='${{ secrets.PWD }}'
           step='${{ secrets.STEP }}'
           python3 main.py ${pmode} ${pkey} ${user} ${pwd} ${step}
+      - name: 开始
+        run: |
+          time=$(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')
+          sed -i "s/^最近一次运行时间:.*/最近一次运行时间: $time （北京时间） /g" README.md
