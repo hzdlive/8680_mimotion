@@ -5,9 +5,6 @@ on:
   schedule:
    - cron: 0 9 * * *
 
-  push:
-    branches: [master]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,7 +16,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.11.0-rc.2
-      - name: 开始
+          
+      - name: Up
         run: |
           pip install requests
           pmode='${{ secrets.PMODE }}'
@@ -28,7 +26,18 @@ jobs:
           pwd='${{ secrets.PWD }}'
           step='${{ secrets.STEP }}'
           python3 main.py ${pmode} ${pkey} ${user} ${pwd} ${step}
-      - name: 开始
+          
+      - name: Update Time
         run: |
           time=$(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')
-          sed -i "s/^最近一次运行时间:.*/最近一次运行时间: $time （北京时间） /g" README.md
+          sed -i "s/^最后一次运行时间:.*/最后一次运行时间: $time （北京时间） /g" README.md
+          
+      - name: Git push assets to Github
+        run: |
+          git init
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git branch -m master
+          git add --all
+          git commit -m "Updated at $(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')（北京时间）"
+          git push -u origin -f
