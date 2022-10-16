@@ -1,9 +1,9 @@
-name: 刷步数
+name: brush Step count
 
 on:
   workflow_dispatch:
-  #schedule:
-   #- cron: 0 2 * * *
+  schedule:
+   - cron: 0 2 * * *
 
 jobs:
   setup:
